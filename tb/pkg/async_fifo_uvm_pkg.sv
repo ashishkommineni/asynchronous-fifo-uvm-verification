@@ -250,6 +250,8 @@ package async_fifo_uvm_pkg;
     function void check_phase(uvm_phase phase);
       if (model_q.size() != 0)
         `uvm_error("NOT_EMPTY", $sformatf("%0d model entries remain", model_q.size()))
+      if (writes == 0 || reads == 0)
+        `uvm_error("NO_TRAFFIC", "Test did not complete both accepted writes and reads")
     endfunction
     function void report_phase(uvm_phase phase);
       `uvm_info("ASYNC_FIFO_SUMMARY", $sformatf("Checked writes=%0d reads=%0d", writes, reads),
