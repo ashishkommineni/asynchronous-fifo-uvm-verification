@@ -15,6 +15,17 @@ module tb_async_fifo_smoke;
   ) dut (
       .*
   );
+  async_fifo_sva sva (
+      .wr_clk,
+      .wr_rst_n,
+      .wr_en,
+      .full,
+      .rd_clk,
+      .rd_rst_n,
+      .rd_en,
+      .rd_valid,
+      .empty
+  );
 
   task automatic push(input logic [DATA_WIDTH-1:0] data);
     @(negedge wr_clk);
