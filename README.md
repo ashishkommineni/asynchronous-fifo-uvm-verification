@@ -34,7 +34,7 @@ make lint
 make smoke
 ```
 
-Successful smoke output ends with:
+The smoke binary also instantiates the domain-local SVA. Successful output ends with:
 
 ```text
 ASYNC_FIFO_SMOKE_PASS checks=28
