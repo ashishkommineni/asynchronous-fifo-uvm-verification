@@ -15,8 +15,9 @@ lint:
 smoke:
 	rm -rf build/obj_async_fifo
 	mkdir -p build
-	$(VERILATOR) --binary --sv --timing --assert -Wall -Wno-fatal --top-module tb_async_fifo_smoke \
-	 --Mdir build/obj_async_fifo rtl/async_fifo.sv tb/smoke/tb_async_fifo_smoke.sv
-	./build/obj_async_fifo/Vtb_async_fifo_smoke | tee results_smoke.log
+	$(VERILATOR) --binary --sv --timing --assert -Wall -Wno-fatal -Wno-SYNCASYNCNET --top-module tb_async_fifo_smoke \
+	 --Mdir build/obj_async_fifo rtl/async_fifo.sv tb/assertions/async_fifo_sva.sv \
+	 tb/smoke/tb_async_fifo_smoke.sv
+	bash -o pipefail -c './build/obj_async_fifo/Vtb_async_fifo_smoke | tee results_smoke.log'
 clean:
 	rm -rf build xcelium.d INCA_libs waves.shm results *.log *.key
