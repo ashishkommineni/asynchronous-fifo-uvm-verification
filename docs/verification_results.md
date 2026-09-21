@@ -1,17 +1,28 @@
-# Verification results
+# Verification Results
 
-Validation date: 2026-09-20
+Revalidated: 2026-09-21
 
 ## Executed checks
 
 | Check | Result | Evidence |
 |---|---|---|
-| RTL lint | PASS | `make lint` completed with Verilator |
-| Executable RTL smoke test | PASS | `ASYNC_FIFO_SMOKE_PASS checks=28` |
-| UVM source compile/elaboration lint | PASS | `sim/files.f`, assertions, and UVM package compiled against Accellera UVM core commit `78c0654` |
+| RTL lint | PASS | `make lint`; zero RTL warnings |
+| Dual-clock RTL + SVA smoke | PASS | `ASYNC_FIFO_SMOKE_PASS checks=28` |
+| Parameter elaboration | PASS | 16-bit data with depths 4 and 32 passed strict lint |
+| UVM source compile/elaboration | PASS | Dual-agent package and complete top compiled with Accellera UVM `78c0654` |
 
-The smoke test uses unrelated write/read clocks and covers fill, drain, full/empty protection, concurrent traffic, pointer wraparound, and end-to-end ordering.
+```text
+ASYNC_FIFO_SMOKE_PASS checks=28
+```
+
+The portable test uses 10 ns and 14 ns unrelated clock periods. It fills and drains the FIFO, attempts overflow and underflow, runs concurrent traffic, wraps pointers, and compares every accepted read against the original write order. SVA is live in the same executable.
+
+## Second-pass findings corrected
+
+- The dual-domain scoreboard now fails an end-of-test run with no accepted reads or writes.
+- Assertions are instantiated in the portable test rather than only compiled in the UVM top.
+- `pipefail` ensures an assertion abort cannot be converted to a successful Make result.
 
 ## Sign-off boundary
 
-Cadence Xcelium was not installed in the validation environment, so no Xcelium runtime result is claimed. Run `make uvm` or `make regress` on a licensed host. RTL simulation also does not replace structural CDC analysis; production sign-off must check synchronizers, reset assumptions, Gray-pointer constraints, and reconvergence in a dedicated CDC tool.
+Xcelium is not installed here, so no Xcelium runtime coverage is claimed. RTL simulation also does not replace structural CDC analysis. Production sign-off must verify synchronizers, reset assumptions, Gray-pointer timing/skew, reconvergence, and memory implementation in dedicated CDC and implementation tools.
